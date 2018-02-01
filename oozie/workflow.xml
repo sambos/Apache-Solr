@@ -1,0 +1,122 @@
+<workflow-app xmlns="uri:oozie:workflow:0.5" name="SolrWorkflow">
+
+  <global>
+    <job-tracker>${jobTracker}</job-tracker>
+    <name-node>${nameNode}</name-node>
+    <configuration>
+      <property>
+        <name>oozie.launcher.mapreduce.task.classpath.user.precedence</name>
+        <value>true</value>
+      </property>
+      <property>
+        <name>oozie.launcher.mapred.job.queue.name</name>
+        <value>${queueName}</value>
+      </property>
+      <property>
+         <name>mapred.job.queue.name</name>
+         <value>${queueName}</value>
+      </property>
+
+    </configuration>
+  </global>
+
+   <start to="initialize" />
+
+    <action name="initialize">
+        <fs>
+          <delete path="${result}"/>
+        </fs>
+        <ok to="run-spark-data-collector"/>
+        <error to="fail"/>
+    </action>
+
+    <action name="run-spark-data-collector">
+        <spark xmlns="uri:oozie:spark-action:0.2">
+            <prepare>
+                <delete path="${result}"/>
+            </prepare>
+            <master>${master}</master>
+            <mode>${spark_mode}</mode>
+            <name>yada</name>
+            <class>org.rsol.spark.DataCollectorDriver</class>
+            <jar>${AppDir}/oozie/lib/DC-0.0.1-SNAPSHOT.jar</jar>
+<spark-opts> --executor-memory 7g --num-executors 14 --driver-memory 7g --executor-cores 4 --conf spark.shuffle.spill=false --conf spark.driver.extraJavaOptions="-Dyarn.log-aggregation-enable=true"</spark-opts>
+            <arg>${input}</arg>
+            <arg>${result}</arg>
+        </spark>
+        <ok to="run-indexer" />
+        <error to="fail" />
+    </action>
+
+    <action name="run-indexer">
+        <java>
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>collectionName</name>
+                    <value>${collection_name}</value>
+                </property>
+            </configuration>
+            <main-class>org.apache.solr.hadoop.MapReduceIndexerTool</main-class>
+            <java-opts>-Djava.security.auth.login.config=jaasLogin.conf</java-opts>
+            <arg>--morphline-file</arg>
+            <arg>${solr_morphline_file}</arg>
+            <arg>--output-dir</arg>
+            <arg>${nameNode}/tmp/${wf:user()}</arg>
+            <arg>--log4j</arg>
+            <arg>log4j.properties</arg>
+            <arg>--verbose</arg>
+            <arg>--go-live</arg>
+            <arg>--zk-host</arg>
+            <arg>${zkHost}</arg>
+            <arg>--collection</arg>
+            <arg>${collectionName}</arg>
+            <arg>hdfs:///data/applications/evnttrcd/out</arg>
+            <file>/hdfs-path/oozie/${solr_morphline_file}#${solr_morphline_file}</file>
+            <file>/hdfs-path/oozie/log4j.properties#log4j.properties</file>
+            <file>/hdfs-path/oozie/jaasLogin.conf#jaasLogin.conf</file>
+        </java>
+        <ok to="end" />
+        <error to="fail" />
+    </action>
+
+    <join name="joining" to="send_email_success"/>
+
+     <action name="send_email_success">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${email}</to>
+
+            <subject>Workflow Job ${wf:name()} : ${wf:id()} - SUCCESS !</subject>
+            <body>Workflow ${wf:id()} Submitted by user: ${wf:user()} completed successfully.
+
+                INPUT : ${wf:conf("in_path")}
+                OUTPUT : ${wf:conf("out_path")}
+                App path : ${wf:appPath()}
+
+                Wrokflow Tracker Uri : ${wf:actionTrackerUri("run-solr-indexer")}.
+           </body>
+        </email>
+        <ok to="end"/>
+        <error to="fail"/>
+    </action>
+
+     <action name="send_email_fail">
+        <email xmlns="uri:oozie:email-action:0.1">
+            <to>${email}</to>
+            <subject>Workflow Job ${wf:name()} : ${wf:id()}  - FAILED </subject>
+            <body>
+                Workflow ${wf:id()} Submitted by user: ${wf:user()} failed.
+           </body>
+        </email>
+        <ok to="end"/>
+        <error to="fail"/>
+    </action>
+
+    <kill name="fail">
+        <message>Solr Indexer Workflow failed with error
+            message[${wf:errorMessage(wf:lastErrorNode())}]
+        </message>
+    </kill>
+    <end name="end" />
+</workflow-app>
