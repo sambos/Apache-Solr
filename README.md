@@ -21,3 +21,4 @@ jettison-1.3.3.jar              kite-morphlines-core-1.0.0-cdh5.11.2.jar
 * Cloudera Search - Clouder search engine based on Solr
 * DSE - DataStax Search Engine (based on Cassandar and Solr)
 * Elastic Search - Similar to Solr, based one Lucene - uses logstash for data collection and Kibana for visualization (a.k.a ELK)
+* * ELK is another alternative to Solr and has a growing user base. Its now certified by Cloudera, HDP and MAPR
