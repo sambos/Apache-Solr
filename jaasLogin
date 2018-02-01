@@ -1,0 +1,23 @@
+SolrJClient {
+com.sun.security.auth.module.Krb5LoginModule required
+useKeyTab=true
+servicePrincipalName="HTTP/host@server.com"
+principal="evnttrcd@DOMAIN";
+useTicketCache=false
+keyTab="/opt/credentials/sso/application.keytab"
+storeKey=true
+doNotPrompt=true
+}
+
+Client{
+com.sun.security.auth.module.Krb5LoginModule required
+useKeyTab=true
+servicePrincipalName="HTTP/host@server.com"
+principal="evnttrcd@DOMAIN";
+useTicketCache=false
+keyTab="/opt/credentials/sso/application.keytab"
+storeKey=true
+doNotPrompt=true
+};
+
+
