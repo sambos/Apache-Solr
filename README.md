@@ -2,7 +2,7 @@
 The example here demonstrates how you can index files locally using LocalIndexer.java (see source code). Solr setup scripts can be used to setup a collection in your container and index.sh for indexing files on hadoop cluster using MapReduceIndexerTool. Ooozie workflow configuration can also be used for submitting a job for indexing.
 
 For local solr setup (on workstations)
-* (localSolrSetup.md)[localSolrSetup.md]
+* [localSolrSetup.md](localSolrSetup.md)
 
 
 ## Oozie workflow
