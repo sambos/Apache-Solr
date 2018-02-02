@@ -4,6 +4,8 @@ The example here demonstrates how you can index files locally using LocalIndexer
 For local solr setup (on workstations)
 * [localSolrSetup.md](localSolrSetup.md)
 
+For setting up solr in docker, see dockerfile under docker folder.
+
 
 ## Oozie workflow
 On cloudera cluster, You will need following files in the oozie/lib
