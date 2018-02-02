@@ -89,9 +89,9 @@ scripts\cloud-scripts\zkcli -zkhost localhost:9983 -cmd linkconfig -collection e
 #### Index data to local Solr instance
 All the above stes are pre-requisites for working on this section.   
 
-clone solr-indexer project, build and execute the ```runSolrIndexer.sh``` shell
-* you will need to specify the location of morphline file, you can download a copy from [workflows\solr](https://sfgitlab.opr.statefarm.org/StormWatch/workflows/tree/master/solr) or from solr-indexer workspace (under src/main/resources)
-* second argument to program is your data file with graph transactions (output of hbase-loader)
+clone java project, build and execute the ```local-index.sh``` shell
+* you will need to specify the location of morphline file
+* second argument to program is your data file
 
 ```
 Usage: 
