@@ -19,9 +19,22 @@ jettison-1.3.3.jar              kite-morphlines-core-1.0.0-cdh5.11.2.jar
 
 ```
 
-# Cloudera metrics to look for
+# Solr Lessons Learned / Few things to remember
+* A Solr Collections (logical Index) is made of one or more SolrCore
+* A Collection can be partitioned or made of many SolrCore, each partition of logical Index is called Shard. Solr Server has mulitple cores
+* Think of Solr Core as a slice of the Index.
+* There is a Max document limit = 2^31 limit per shard in Lucene. https://issues.apache.org/jira/browse/LUCENE-5843
+* Understand Solr Cache (fieldCache and fieldValueCache, documentCache, filterCache)
+* Also 
 
-# Solr Lessons Learned
+# Additional info on solr sizing/heap estimator
+Also take a look at the attached spreadsheets for more calculations
+
+* https://lucidworks.com/2011/09/14/estimating-memory-and-storage-for-lucenesolr/
+* https://github.com/apache/lucene-solr/tree/master/dev-tools
+
+
+
 
 # Alternatives/Competitors
 
