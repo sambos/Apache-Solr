@@ -58,7 +58,7 @@ public class IndexerDriver {
 	
 	public static void processFiles(File morphlineFile, String[] files) throws IOException {
 		String morphlineId = null;
-		new MorphlineDriver().run(morphlineFile, morphlineId, files);
+		new MorphlineProcessor().run(morphlineFile, morphlineId, files);
 	   	if(System.getProperty("rm") != null)
 			  deleteFiles(files);		
 	}
