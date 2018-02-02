@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "Event",
+  "fields" : [ {
+    "name" : "headers",
+    "type" : {
+      "type" : "map",
+      "values" : "string"
+    }
+  }, {
+    "name" : "data",
+    "type" : "bytes"
+  } ]
+}
