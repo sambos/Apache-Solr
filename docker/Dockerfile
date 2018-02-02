@@ -15,7 +15,7 @@ RUN cp -r /home/$SOLR_DIR/* /home \
 # lsof is needed as the bin/solr scripts use them
 RUN yum -y install lsof \
  && yum -y install elfutils 
-COPY dist/$SOLR_INDXR_TOOL solrSetup.sh schema.xml /home/
+COPY dist/$SOLR_INDXR_TOOL setupSolr.sh schema.xml /home/
 
 #extract indexer tool and override configs
 RUN tar -xvzf /home/$SOLR_INDXR_TOOL
@@ -26,8 +26,8 @@ RUN mkdir -p /home/indexer/data
 COPY data /home/indexer/data
 
 # run morphline and indexer
-RUN chmod 777 /home/solrSetup.sh
-ENTRYPOINT ["/home/solrSetup.sh"]
+RUN chmod 777 /home/setupSolr.sh
+ENTRYPOINT ["/home/setupSolr.sh"]
 
 EXPOSE 8983
 EXPOSE 8984
