@@ -20,7 +20,7 @@ jettison-1.3.3.jar              kite-morphlines-core-1.0.0-cdh5.11.2.jar
 ```
 
 # Solr Lessons Learned / Few things to remember
-When estimating solr for sizing/heap usage, there is no set formula for hard and fast numbers (please some attached calculations). Solr does requires you to empirically calculate those numbers based on your own analysis on your own requirements. Following points helped me in while doing the analysis:
+When estimating solr for sizing/heap usage, there is no set formula for hard and fast numbers (please some attached calculations). Solr does requires you to empirically calculate those numbers based on your own analysis on your own requirements. Following are my lessons learned from my analysis:
 
 * A Solr Collections (logical Index) is made of one or more SolrCore
 * A Collection can be partitioned or made of many SolrCore, each partition of logical Index is called Shard. Solr Server has mulitple cores
