@@ -20,6 +20,8 @@ jettison-1.3.3.jar              kite-morphlines-core-1.0.0-cdh5.11.2.jar
 ```
 
 # Solr Lessons Learned / Few things to remember
+When estimating solr for sizing/heap usage, there is no set formula for hard and fast numbers (please some attached calculations). Solr does requires you to empirically calculate those numbers based on your own analysis on your own requirements. Following points helped me in while doing the analysis:
+
 * A Solr Collections (logical Index) is made of one or more SolrCore
 * A Collection can be partitioned or made of many SolrCore, each partition of logical Index is called Shard. Solr Server has mulitple cores
 * Think of Solr Core as a slice of the Index.
@@ -77,6 +79,11 @@ https://issues.apache.org/jira/browse/LUCENE-4226
 http://blog.jpountz.net/post/35667727458/stored-fields-compression-in-lucene-41
  
 https://www.elastic.co/blog/store-compression-in-lucene-and-elasticsearch
+
+## Solr Memory usage calculations
+Please see the spread sheet attached in this project for approx calculations - they are not in hard stones
+https://blog.cloudera.com/blog/2017/06/apache-solr-memory-tuning-for-production/
+http://blog.cloudera.com/blog/2017/06/solr-memory-tuning-for-production-part-2/
 
 
 # Additional info on solr sizing/heap estimator
