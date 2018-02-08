@@ -57,6 +57,17 @@ jettison-1.3.3.jar              kite-morphlines-core-1.0.0-cdh5.11.2.jar
 * Keep the commit values optimal (60 seconds), keeping it more would cause performance impacts.
 * Also Oversharding can creat complex interactions and should be monitored. Keep the collections partitioned and manage with virtual pointers to the collections. Depending on your requirement you can possibly create collections by type, date, year or some other criteria suitable for searches.
 
+## Solr Caches
+Cache Type | Description | Min Recommended | Max Recommended
+------------------------|---------------------------------------------------------------|---|-------
+DirectMemory (off-heap) | Caches data read from disk, similar to linux file system cache|8GB|12-16GB
+HdfsBlockCache (off-heap) | Caches hdfs blocks <br/> Jvm -XX:MaxDirectMemorySize=20g  (-XX:MaxDirectMemorySize=4294967296) <br/> -Dsolr.hdfs.blockcache.slab.count=1 <br/> -Dsolr.hdfs.blockcache.blocksperbank=16384 <br/> -Dsolr.hdfs.blockcache.direct.memory.allocation=true <br/> -Dsolr.hdfs.blockcache.enabled=true   | |
+Document cache | Caches frequently used stored fields, (isn't as performance critical as the other filter/query cache) If you have many stored fields, or large stored values, then you will probably want to keep your document cache relatively small | MB | MB
+Field value cache | Similar to field cache but used for faceting and sorting multi-valued fields | 8-12GB | 12-16GB
+Field cache | used for faceting, sorting single-valued fields - per node | 4-8GB | 8-12GB
+filter cache | 'fq' -> filter query <br/> Caches the results of the frequently used filter query <br/> <br/> Like the query cache, the memory use of filter cache is potentially quite large. Solr represents the document IDs in a filter as a bit-string containing one bit per document in your index. If your index contains one million documents, each filter will require one million bits of memory—around 125KB. For a filter cache sized to hold 1,000 cache entries, that's in the area of 120MB.| 1MB <br/> (512 entries) <br/> 1000 results per entry | 5MB <br/> 10,000 results 
+query result cache | Stores the results of frequently used 'q' as array of integer bytes <br/> Entry = Bytes for query string + 8 bytes for each result retrieved | 1MB | 5MB
+
 ## Solr Field Compression
 By default solr provides Stored Field Compression. LZ4 is default with 4.1 . DEFLATE is an option with 5.0
 * Looking at this JIRA for lucene, it appears that compression is by default enabled for stored fields 
