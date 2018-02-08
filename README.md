@@ -34,6 +34,40 @@ jettison-1.3.3.jar              kite-morphlines-core-1.0.0-cdh5.11.2.jar
 * The heap usage per shard is also dependent on the number of documents being indexed. The lower the number of documents the lower the heap usage, but again this is also dependent on the size of each document as well.
 * Solr would perform better if the heap size is lower to avoid log GC pauses. Use G1GC for best results.
 
+* The Solr memory requirement can increase exponentially depending on the search/sort being performed. The memory needed rapidly adds up when
+	• Sorting/faceting a large result set
+	• Long running queries / Running multiple queries simultaneously
+	• Queries with many terms 
+
+* In addition, the memory requirement also depend on the size of the repository as well as the amount of memory you allocate to the Solr caches. Decreasing the Solr cache parameters can dramatically lower the memory requirements, with the drawback of hitting the disk more often. So look for hte cumulative hit ratio, ideally it should be close to <=1. With hit ratio as 0.99 implying 99% of the queries are being served from cache.
+* Caching in Solr is unlike ordinary caches in that Solr cached objects will not expire after a certain period of time; rather, cached objects will be valid as long as the Index Searcher is valid.
+
+* Start Solr with "Safe Configuration Parameters"
+* JVM heap size should match Solr heap/memory requirement
+* * finding the optimal tradeoff between memory usage and performance  - Sweet Spot = finding optimal heap size
+* * Note: The more memory Solr has at its disposal, the better it will perform - On the other hand, the more memory given, the more hardware cost and JVM GC overhead
+* Use DocValues If workload is heavy in faceting and sorting (for some fields)
+* * When used Solr avoids using field-cache and field-value-cache on Heap (greatly reduces memory req on heap and JVM GC)
+* * Field Cache is major memory consumer, use docValue to reduce field cache memory footprint. Lucene manages field cahe at JVM level
+* * Tradeoff: docValue results in large Disk I/O and impacts performance and requires large direct memory
+* Use G1GC and enable GC logging (has trivial overhead) to estimate how jvm handles memory
+* Configure HDFS Block Cache and Direct Memory appropriately.
+* Text field can cause large memory usage when the field is used for faceting and sorting. Use string field instead of text field in this case. 
+* Consider disabling field caching in solrconfig.xml if your application does not need caching - this will ease some heap memory requirements
+* Keep the commit values optimal (60 seconds), keeping it more would cause performance impacts.
+* Also Oversharding can creat complex interactions and should be monitored. Keep the collections partitioned and manage with virtual pointers to the collections. Depending on your requirement you can possibly create collections by type, date, year or some other criteria suitable for searches.
+
+## Solr Field Compression
+By default solr provides Stored Field Compression. LZ4 is default with 4.1 . DEFLATE is an option with 5.0
+* Looking at this JIRA for lucene, it appears that compression is by default enabled for stored fields 
+https://issues.apache.org/jira/browse/LUCENE-4226
+ 
+* Here is the original post from the lucene commtter referring to the lucene StoredFieldFormat that uses compression.
+http://blog.jpountz.net/post/35667727458/stored-fields-compression-in-lucene-41
+ 
+https://www.elastic.co/blog/store-compression-in-lucene-and-elasticsearch
+
+
 # Additional info on solr sizing/heap estimator
 Also take a look at the attached spreadsheets for more calculations
 
